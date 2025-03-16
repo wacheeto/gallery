@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .header {
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            background-color: black;
+        }
+        .logo {
+            height: 70px;
+            width: auto;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 50%;
+        }
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            float: right;
+        }
+        .gallery {
+            display: flex;
+            flex-direction: column;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            width: 80%;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        .post-container {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            width: 400px;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+        }
+        .post-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .post-description {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .like-button {
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <img src="contents/ig.png" alt="Logo" class="logo">
+        </header>
+        
+        <!-- Modal -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <button class="close-button" onclick="toggleModal(false)">X</button>
+                <h2>Welcome, Pia! nakaon kana lab?</h2>
+                <p>With this scuffed website, I present you some of our times together. With all my knowledge here sa coding, my passion, my work and time, i give sayo.
+                    This is an ongoing project hehe :D</p>
+                <div class="image-container">
+                    <p>Double tap each!  press X to close</p>
+                    <img src="contents/96933.png" alt="Double Tap Icon" class="modal-image">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gallery -->
+        <div class="gallery" id="gallery"></div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const gallery = document.getElementById("gallery");
+            const lastTap = {};
+            const posts = [
+                {id:"1",
+                    uploader: "thisaintkiel",
+                    image: "../assets/1.jpg",
+                    description: "cutest woman ever. never expected to be with this woman. madly in love with her from then till now."
+                    },
+                    { 
+                    id:"2",
+                    uploader: "thisaintkiel",
+                    image: "../assets/2.jpg",
+                    description: "i thumbs up cuz woman 10/10. Went to a rooftop Cafe. It was nice hehe coffee was meh but the time together was the best part of that hang out."
+                    },
+                    { 
+                    id:"3",
+                    uploader: "thisaintkiel",
+                    image: "../assets/3.jpg",
+                    description: "we look good together. hell yeah. after HYST cafe! i love working with her and i just try to annoy her to make her feel relaxed  a little bit :))"
+                    },
+                    { 
+                    id:"4",
+                    uploader: "thisaintkiel",
+                    image: "../assets/4.jpg",
+                    description: "Before eating at over easy. FOOD WAS HELLA EXPENSIVE! but didnt matter. Atleast it was a date w mah boo"
+                    },
+                    { 
+                    id:"5",
+                    uploader: "thisaintkiel",
+                    image: "../assets/5.jpg",
+                    description: "Her default mood. i love you, my angry bird"
+                    },
+                    { 
+                    id:"6",
+                    uploader: "thisaintkiel",
+                    image: "../assets/6.jpg",
+                    description: "She knows how much i love this moment. Met the third and bunso. made me feel like part of their family. mwa. "
+                    },
+                    { 
+                    id:"7",
+                    uploader: "thisaintkiel",
+                    image: "../assets/7.png",
+                    description: "Veins popping bruh. We love coffees. Well, coffees and work! another HYST cafe working session!"
+                    },
+                    { 
+                    id:"8",
+                    uploader: "thisaintkiel",
+                    image: "../assets/8.png",
+                    description: "special protein day and hell lot of carbs! We cooked and-- well, she cooked :> loved the potato, the chicken breast, the pasta, and the dessert"
+                    },
+                    { 
+                    id:"9",
+                    uploader: "thisaintkiel",
+                    image: "../assets/9.jpg",
+                    description: "my woman <3 - HYST again(1/3)"
+                    },
+                    { 
+                    id:"10",
+                    uploader: "thisaintkiel",
+                    image: "../assets/10.jpg",
+                    description: "pogi namin - HYST again(2/3)"
+                    },
+                    { 
+                    id:"11",
+                    uploader: "thisaintkiel",
+                    image: "../assets/11.jpg",
+                    description: "kisses! (we luv dis) - HYST again(2/3)"
+                    },
+                    
+            ];
+            
+            posts.forEach(post => {
+                const postElement = document.createElement("div");
+                postElement.classList.add("post-container");
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <img src="https://64.media.tumblr.com/3dcc83c15c2bd3ce4c584beb5d0b2668/294b8dd17120655d-80/s400x600/7afff749871db128d4cd560550cd7f6ec5781fcf.jpg" alt="Profile">
+                        <span>${post.uploader}</span>
+                    </div>
+                    <img src="${post.image}" alt="Post Image" class="post-image" data-id="${post.id}">
+                    <span>${post.uploader}</span>
+                    <p class="post-description">${post.description}</p>
+                    <span class="like-button" data-id="${post.id}">🤍</span>
+                `;
+                gallery.appendChild(postElement);
+            });
+            
+            gallery.addEventListener("click", (event) => {
+                const img = event.target.closest(".post-image");
+                if (!img) return;
+                
+                const id = img.dataset.id;
+                const now = new Date().getTime();
+                if (lastTap[id] && now - lastTap[id] < 300) {
+                    toggleLike(id);
+                }
+                lastTap[id] = now;
+            });
+        });
+        function toggleModal(show) {
+            document.getElementById("modal").style.display = show ? "flex" : "none";
+        }
+        
+        function toggleLike(id) {
+            const likeButton = document.querySelector(`.like-button[data-id='${id}']`);
+            if (likeButton) {
+                likeButton.textContent = likeButton.textContent === "🤍" ? "❤️" : "🤍";
+            }
+        }
+    </script>
+</body>
+</html>
